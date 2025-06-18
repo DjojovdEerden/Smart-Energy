@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 import { json, LoaderFunction } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import EnergyCard from "../components/EnergyCard";
@@ -37,3 +38,37 @@ export default function Dashboard() {
     </div>
   );
 }
+=======
+import { useEffect, useState } from "react";
+
+// Eenvoudige CSV parser
+function parseCSV(text: string) {
+  const rows = text.trim().split("\n");
+  const headers = rows.shift()?.split(",") || [];
+
+  return rows.map((row) => {
+    const values = row.split(",");
+    return Object.fromEntries(headers.map((h, i) => [h, values[i]]));
+  });
+}
+
+export default function Dashboard() {
+  const [data, setData] = useState<any[]>([]);
+
+  useEffect(() => {
+    fetch("/data.csv")
+      .then((res) => res.text())
+      .then((text) => {
+        const parsed = parseCSV(text);
+        setData(parsed);
+      });
+  }, []);
+
+  return (
+    <div>
+      <h1>CSV Gegevens</h1>
+      <pre>{JSON.stringify(data, null, 2)}</pre>
+    </div>
+  );
+}
+>>>>>>> Stashed changes
