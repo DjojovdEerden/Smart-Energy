@@ -156,6 +156,11 @@ function updateCharts() {
 
 async function fetchCSVData() {
   try {
+    const refreshBtn = document.getElementById('refreshBtn');
+    // Show loading state
+    refreshBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
+    refreshBtn.disabled = true;
+    
     const response = await fetch('data/energy.csv'); // adjust path if needed
     if (!response.ok) throw new Error('Failed to load CSV');
     const text = await response.text();
@@ -163,8 +168,16 @@ async function fetchCSVData() {
 
     if (!solarChart) createCharts();
     else updateCharts();
+    
+    // Reset button state
+    refreshBtn.innerHTML = '<i class="fas fa-sync-alt"></i> Refresh Data';
+    refreshBtn.disabled = false;
   } catch (error) {
     console.error('Error loading CSV:', error);
+    // Reset button state and show error
+    const refreshBtn = document.getElementById('refreshBtn');
+    refreshBtn.innerHTML = '<i class="fas fa-sync-alt"></i> Try Again';
+    refreshBtn.disabled = false;
   }
 }
 
