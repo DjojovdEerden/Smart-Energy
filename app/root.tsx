@@ -2,6 +2,7 @@ import type { LinksFunction } from "@remix-run/node";
 import {
   Links,
   LiveReload,
+  Link,
   Meta,
   Outlet,
   Scripts,
