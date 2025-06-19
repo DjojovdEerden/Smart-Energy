@@ -156,42 +156,62 @@
       <!-- Grid Layout -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <!-- Solar Panel Card -->
-        <div id="solarWidget" class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 transition-all duration-300">
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 transition-all duration-300">
           <div class="flex justify-between items-center mb-4">
             <h2 class="text-lg font-semibold m-0">Zonnepaneel Prestaties</h2>
+            <div class="flex gap-2">
+              <button class="w-8 h-8 rounded-full flex items-center justify-center cursor-pointer bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border-none">
+                <i class="fas fa-expand"></i>
+              </button>
+            </div>
           </div>
-          <div class="relative" style="height: 300px">
-            <canvas id="solarChart" class="w-full h-full"></canvas>
+          <div class="relative">
+            <canvas id="solarChart" class="w-full"></canvas>
           </div>
         </div>
         
         <!-- Power Consumption Card -->
-        <div id="powerWidget" class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 transition-all duration-300">
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 transition-all duration-300">
           <div class="flex justify-between items-center mb-4">
             <h2 class="text-lg font-semibold m-0">Stroomverbruik Woning</h2>
+            <div class="flex gap-2">
+              <button class="w-8 h-8 rounded-full flex items-center justify-center cursor-pointer bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border-none">
+                <i class="fas fa-expand"></i>
+              </button>
+            </div>
           </div>
-          <div class="relative" style="height: 300px">
-            <canvas id="powerChart" class="w-full h-full"></canvas>
+          <div class="relative">
+            <canvas id="powerChart" class="w-full"></canvas>
           </div>
         </div>
         
         <!-- Temperature Card -->
-        <div id="tempWidget" class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 transition-all duration-300">
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 transition-all duration-300">
           <div class="flex justify-between items-center mb-4">
             <h2 class="text-lg font-semibold m-0">Temperatuur Monitoring</h2>
+            <div class="flex gap-2">
+              <button class="w-8 h-8 rounded-full flex items-center justify-center cursor-pointer bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border-none">
+                <i class="fas fa-expand"></i>
+              </button>
+            </div>
           </div>
-          <div class="relative" style="height: 300px">
-            <canvas id="tempChart" class="w-full h-full"></canvas>
+          <div class="relative">
+            <canvas id="tempChart" class="w-full"></canvas>
           </div>
         </div>
         
         <!-- Battery and CO2 Card -->
-        <div id="batteryCO2Widget" class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 transition-all duration-300">
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 transition-all duration-300">
           <div class="flex justify-between items-center mb-4">
             <h2 class="text-lg font-semibold m-0">Accuniveau & Luchtkwaliteit</h2>
+            <div class="flex gap-2">
+              <button class="w-8 h-8 rounded-full flex items-center justify-center cursor-pointer bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border-none">
+                <i class="fas fa-expand"></i>
+              </button>
+            </div>
           </div>
-          <div class="relative" style="height: 300px">
-            <canvas id="batteryCO2Chart" class="w-full h-full"></canvas>
+          <div class="relative">
+            <canvas id="batteryCO2Chart" class="w-full"></canvas>
           </div>
         </div>
       </div>
