@@ -24,12 +24,22 @@ function parseCSV(data) {
 
 let energyData = [];
 
-const solarCtx = document.getElementById('solarChart')?.getContext('2d');
-const powerCtx = document.getElementById('powerChart')?.getContext('2d');
-const tempCtx = document.getElementById('tempChart')?.getContext('2d');
-const batteryCO2Ctx = document.getElementById('batteryCO2Chart')?.getContext('2d');
+// Initialize chart contexts only if elements exist
+function getChartContext(id) {
+  const canvas = document.getElementById(id);
+  return canvas ? canvas.getContext('2d') : null;
+}
 
 let solarChart, powerChart, tempChart, batteryCO2Chart;
+let solarCtx, powerCtx, tempCtx, batteryCO2Ctx;
+
+// Initialize chart contexts after DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+  solarCtx = getChartContext('solarChart');
+  powerCtx = getChartContext('powerChart');
+  tempCtx = getChartContext('tempChart');
+  batteryCO2Ctx = getChartContext('batteryCO2Chart');
+});
 
 function createCharts() {
   const options = {
@@ -41,107 +51,124 @@ function createCharts() {
     }
   };
 
-  solarChart = new Chart(solarCtx, {
-    type: 'line',
-    data: {
-      labels: energyData.map(d => d['Tijdstip']),
-      datasets: [
-        {
-          label: 'Zonnepaneelspanning (V)',
-          data: energyData.map(d => d['Zonnepaneelspanning (V)']),
-          borderColor: 'rgb(255, 99, 132)',
-          fill: false,
-          tension: 0.2
-        },
-        {
-          label: 'Zonnepaneelstroom (A)',
-          data: energyData.map(d => d['Zonnepaneelstroom (A)']),
-          borderColor: 'rgb(54, 162, 235)',
-          fill: false,
-          tension: 0.2
-        }
-      ]
-    },
-    options
-  });
+  // Only create charts if their containers are visible and contexts exist
+  if (solarCtx && isWidgetVisible('solarWidget')) {
+    solarChart = new Chart(solarCtx, {
+      type: 'line',
+      data: {
+        labels: energyData.map(d => d['Tijdstip']),
+        datasets: [
+          {
+            label: 'Zonnepaneelspanning (V)',
+            data: energyData.map(d => d['Zonnepaneelspanning (V)']),
+            borderColor: 'rgb(255, 99, 132)',
+            fill: false,
+            tension: 0.2
+          },
+          {
+            label: 'Zonnepaneelstroom (A)',
+            data: energyData.map(d => d['Zonnepaneelstroom (A)']),
+            borderColor: 'rgb(54, 162, 235)',
+            fill: false,
+            tension: 0.2
+          }
+        ]
+      },
+      options
+    });
+  }
 
-  powerChart = new Chart(powerCtx, {
-    type: 'line',
-    data: {
-      labels: energyData.map(d => d['Tijdstip']),
-      datasets: [
-        {
-          label: 'Stroomverbruik woning (kW)',
-          data: energyData.map(d => d['Stroomverbruik woning (kW)']),
-          borderColor: 'rgb(255, 206, 86)',
-          fill: false,
-          tension: 0.2
-        },
-        {
-          label: 'Waterstofproductie (L/u)',
-          data: energyData.map(d => d['Waterstofproductie (L/u)']),
-          borderColor: 'rgb(75, 192, 192)',
-          fill: false,
-          tension: 0.2
-        }
-      ]
-    },
-    options
-  });
+  if (powerCtx && isWidgetVisible('powerWidget')) {
+    powerChart = new Chart(powerCtx, {
+      type: 'line',
+      data: {
+        labels: energyData.map(d => d['Tijdstip']),
+        datasets: [
+          {
+            label: 'Stroomverbruik woning (kW)',
+            data: energyData.map(d => d['Stroomverbruik woning (kW)']),
+            borderColor: 'rgb(255, 206, 86)',
+            fill: false,
+            tension: 0.2
+          },
+          {
+            label: 'Waterstofproductie (L/u)',
+            data: energyData.map(d => d['Waterstofproductie (L/u)']),
+            borderColor: 'rgb(75, 192, 192)',
+            fill: false,
+            tension: 0.2
+          }
+        ]
+      },
+      options
+    });
+  }
 
-  tempChart = new Chart(tempCtx, {
-    type: 'line',
-    data: {
-      labels: energyData.map(d => d['Tijdstip']),
-      datasets: [
-        {
-          label: 'Buitentemperatuur (°C)',
-          data: energyData.map(d => d['Buitentemperatuur (°C)']),
-          borderColor: 'rgb(153, 102, 255)',
-          fill: false,
-          tension: 0.2
-        },
-        {
-          label: 'Binnentemperatuur (°C)',
-          data: energyData.map(d => d['Binnentemperatuur (°C)']),
-          borderColor: 'rgb(255, 159, 64)',
-          fill: false,
-          tension: 0.2
-        }
-      ]
-    },
-    options
-  });
+  if (tempCtx && isWidgetVisible('tempWidget')) {
+    tempChart = new Chart(tempCtx, {
+      type: 'line',
+      data: {
+        labels: energyData.map(d => d['Tijdstip']),
+        datasets: [
+          {
+            label: 'Buitentemperatuur (°C)',
+            data: energyData.map(d => d['Buitentemperatuur (°C)']),
+            borderColor: 'rgb(153, 102, 255)',
+            fill: false,
+            tension: 0.2
+          },
+          {
+            label: 'Binnentemperatuur (°C)',
+            data: energyData.map(d => d['Binnentemperatuur (°C)']),
+            borderColor: 'rgb(255, 159, 64)',
+            fill: false,
+            tension: 0.2
+          }
+        ]
+      },
+      options
+    });
+  }
 
-  batteryCO2Chart = new Chart(batteryCO2Ctx, {
-    type: 'line',
-    data: {
-      labels: energyData.map(d => d['Tijdstip']),
-      datasets: [
-        {
-          label: 'Accuniveau (%)',
-          data: energyData.map(d => d['Accuniveau (%)']),
-          borderColor: 'rgb(0, 128, 0)',
-          fill: false,
-          tension: 0.2
-        },
-        {
-          label: 'CO2-concentratie binnen (ppm)',
-          data: energyData.map(d => d['CO2-concentratie binnen (ppm)']),
-          borderColor: 'rgb(128, 0, 0)',
-          fill: false,
-          tension: 0.2
-        }
-      ]
-    },
-    options
-  });
+  if (batteryCO2Ctx && isWidgetVisible('batteryCO2Widget')) {
+    batteryCO2Chart = new Chart(batteryCO2Ctx, {
+      type: 'line',
+      data: {
+        labels: energyData.map(d => d['Tijdstip']),
+        datasets: [
+          {
+            label: 'Accuniveau (%)',
+            data: energyData.map(d => d['Accuniveau (%)']),
+            borderColor: 'rgb(0, 128, 0)',
+            fill: false,
+            tension: 0.2
+          },
+          {
+            label: 'CO2-concentratie binnen (ppm)',
+            data: energyData.map(d => d['CO2-concentratie binnen (ppm)']),
+            borderColor: 'rgb(128, 0, 0)',
+            fill: false,
+            tension: 0.2
+          }
+        ]
+      },
+      options
+    });
+  }
+}
+
+// Helper function to check if widget is visible
+function isWidgetVisible(widgetId) {
+  const widget = document.getElementById(widgetId);
+  return widget && widget.style.display !== 'none';
 }
 
 function updateCharts() {
   const labels = energyData.map(d => d['Tijdstip']);
 
   const setChart = (chart, keys) => {
+    if (!chart) return;
+    
     keys.forEach((key, i) => {
       chart.data.datasets[i].data = energyData.map(d => d[key]);
     });
@@ -149,20 +176,20 @@ function updateCharts() {
     chart.update();
   };
 
-  // Only update charts that are visible
-  if (document.getElementById('solarWidget').style.display !== 'none') {
+  // Only update charts that exist and are visible
+  if (solarChart && isWidgetVisible('solarWidget')) {
     setChart(solarChart, ['Zonnepaneelspanning (V)', 'Zonnepaneelstroom (A)']);
   }
   
-  if (document.getElementById('powerWidget').style.display !== 'none') {
+  if (powerChart && isWidgetVisible('powerWidget')) {
     setChart(powerChart, ['Stroomverbruik woning (kW)', 'Waterstofproductie (L/u)']);
   }
   
-  if (document.getElementById('tempWidget').style.display !== 'none') {
+  if (tempChart && isWidgetVisible('tempWidget')) {
     setChart(tempChart, ['Buitentemperatuur (°C)', 'Binnentemperatuur (°C)']);
   }
   
-  if (document.getElementById('batteryCO2Widget').style.display !== 'none') {
+  if (batteryCO2Chart && isWidgetVisible('batteryCO2Widget')) {
     setChart(batteryCO2Chart, ['Accuniveau (%)', 'CO2-concentratie binnen (ppm)']);
   }
 }
@@ -179,8 +206,17 @@ async function fetchCSVData() {
     const text = await response.text();
     energyData = parseCSV(text);
 
-    if (!solarChart) createCharts();
-    else updateCharts();
+    // Create or update charts only after DOM and widget preferences are loaded
+    if (!solarChart && !powerChart && !tempChart && !batteryCO2Chart) {
+      // Wait for DOM to be fully loaded
+      if (document.readyState === 'complete') {
+        createCharts();
+      } else {
+        window.addEventListener('load', createCharts);
+      }
+    } else {
+      updateCharts();
+    }
     
     // Knopstatus herstellen
     refreshBtn.innerHTML = '<i class="fas fa-sync-alt"></i> Gegevens Vernieuwen';
