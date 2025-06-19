@@ -24,10 +24,10 @@ function parseCSV(data) {
 
 let energyData = [];
 
-const solarCtx = document.getElementById('solarChart').getContext('2d');
-const powerCtx = document.getElementById('powerChart').getContext('2d');
-const tempCtx = document.getElementById('tempChart').getContext('2d');
-const batteryCO2Ctx = document.getElementById('batteryCO2Chart').getContext('2d');
+const solarCtx = document.getElementById('solarChart')?.getContext('2d');
+const powerCtx = document.getElementById('powerChart')?.getContext('2d');
+const tempCtx = document.getElementById('tempChart')?.getContext('2d');
+const batteryCO2Ctx = document.getElementById('batteryCO2Chart')?.getContext('2d');
 
 let solarChart, powerChart, tempChart, batteryCO2Chart;
 
@@ -149,10 +149,22 @@ function updateCharts() {
     chart.update();
   };
 
-  setChart(solarChart, ['Zonnepaneelspanning (V)', 'Zonnepaneelstroom (A)']);
-  setChart(powerChart, ['Stroomverbruik woning (kW)', 'Waterstofproductie (L/u)']);
-  setChart(tempChart, ['Buitentemperatuur (°C)', 'Binnentemperatuur (°C)']);
-  setChart(batteryCO2Chart, ['Accuniveau (%)', 'CO2-concentratie binnen (ppm)']);
+  // Only update charts that are visible
+  if (document.getElementById('solarWidget').style.display !== 'none') {
+    setChart(solarChart, ['Zonnepaneelspanning (V)', 'Zonnepaneelstroom (A)']);
+  }
+  
+  if (document.getElementById('powerWidget').style.display !== 'none') {
+    setChart(powerChart, ['Stroomverbruik woning (kW)', 'Waterstofproductie (L/u)']);
+  }
+  
+  if (document.getElementById('tempWidget').style.display !== 'none') {
+    setChart(tempChart, ['Buitentemperatuur (°C)', 'Binnentemperatuur (°C)']);
+  }
+  
+  if (document.getElementById('batteryCO2Widget').style.display !== 'none') {
+    setChart(batteryCO2Chart, ['Accuniveau (%)', 'CO2-concentratie binnen (ppm)']);
+  }
 }
 
 async function fetchCSVData() {
