@@ -1,6 +1,6 @@
-document.getElementById('username').textContent = 'Jane Doe';
+document.getElementById('username').textContent = 'Joe Mama';
 
-// Parse CSV string into array of objects
+// CSV-string in array van objecten omzetten
 function parseCSV(data) {
   const lines = data.trim().split('\n');
   const headers = lines[0].split(';').map(h => h.trim());
@@ -34,8 +34,9 @@ let solarChart, powerChart, tempChart, batteryCO2Chart;
 function createCharts() {
   const options = {
     responsive: true,
+    maintainAspectRatio: false,
     scales: {
-      x: { title: { display: true, text: 'Time' } },
+      x: { title: { display: true, text: 'Tijd' } },
       y: { beginAtZero: true }
     }
   };
@@ -157,32 +158,32 @@ function updateCharts() {
 async function fetchCSVData() {
   try {
     const refreshBtn = document.getElementById('refreshBtn');
-    // Show loading state
-    refreshBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
+    // Laadstatus weergeven
+    refreshBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Laden...';
     refreshBtn.disabled = true;
     
-    const response = await fetch('data/energy.csv'); // adjust path if needed
-    if (!response.ok) throw new Error('Failed to load CSV');
+    const response = await fetch('data/energy.csv'); // pad indien nodig aanpassen
+    if (!response.ok) throw new Error('CSV laden mislukt');
     const text = await response.text();
     energyData = parseCSV(text);
 
     if (!solarChart) createCharts();
     else updateCharts();
     
-    // Reset button state
-    refreshBtn.innerHTML = '<i class="fas fa-sync-alt"></i> Refresh Data';
+    // Knopstatus herstellen
+    refreshBtn.innerHTML = '<i class="fas fa-sync-alt"></i> Gegevens Vernieuwen';
     refreshBtn.disabled = false;
   } catch (error) {
-    console.error('Error loading CSV:', error);
-    // Reset button state and show error
+    console.error('Fout bij laden CSV:', error);
+    // Knopstatus herstellen en fout weergeven
     const refreshBtn = document.getElementById('refreshBtn');
-    refreshBtn.innerHTML = '<i class="fas fa-sync-alt"></i> Try Again';
+    refreshBtn.innerHTML = '<i class="fas fa-sync-alt"></i> Opnieuw Proberen';
     refreshBtn.disabled = false;
   }
 }
 
-// Initial fetch
+// Initiële gegevensophaling
 fetchCSVData();
 
-// Refresh button
+// Vernieuw-knop
 document.getElementById('refreshBtn').addEventListener('click', fetchCSVData);

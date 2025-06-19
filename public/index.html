@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="nl">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -9,404 +9,178 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <style>
-    :root {
-      --primary-color: #3a86ff;
-      --secondary-color: #8338ec;
-      --success-color: #38b000;
-      --warning-color: #ffbe0b;
-      --danger-color: #ff006e;
-      --light-bg: #f8f9fa;
-      --dark-bg: #212529;
-      --light-card: #ffffff;
-      --dark-card: #343a40;
-      --light-text: #212529;
-      --dark-text: #f8f9fa;
-      --border-radius: 12px;
-      --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      --transition-speed: 0.3s;
-    }
-
-    body {
-      font-family: 'Inter', sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: var(--light-bg);
-      color: var(--light-text);
-      transition: background-color var(--transition-speed), color var(--transition-speed);
-    }
-
-    body.dark-mode {
-      background-color: var(--dark-bg);
-      color: var(--dark-text);
-    }
-
-    .dashboard {
-      display: flex;
-      min-height: 100vh;
-    }
-
-    .sidebar {
-      width: 240px;
-      background-color: var(--light-card);
-      border-right: 1px solid rgba(0,0,0,0.1);
-      padding: 1.5rem;
-      display: flex;
-      flex-direction: column;
-      transition: all var(--transition-speed);
-    }
-
-    body.dark-mode .sidebar {
-      background-color: var(--dark-card);
-      border-right: 1px solid rgba(255,255,255,0.1);
-    }
-
-    .sidebar-header {
-      display: flex;
-      align-items: center;
-      margin-bottom: 2rem;
-      padding-bottom: 1rem;
-      border-bottom: 1px solid rgba(0,0,0,0.1);
-    }
-
-    body.dark-mode .sidebar-header {
-      border-bottom: 1px solid rgba(255,255,255,0.1);
-    }
-
-    .logo {
-      font-weight: 700;
-      font-size: 1.4rem;
-      color: var(--primary-color);
-      margin-left: 0.5rem;
-    }
-
-    .nav-links {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
-
-    .nav-links li {
-      margin-bottom: 0.8rem;
-    }
-
-    .nav-links a {
-      display: flex;
-      align-items: center;
-      padding: 0.75rem 1rem;
-      border-radius: var(--border-radius);
-      color: inherit;
-      text-decoration: none;
-      transition: background-color 0.2s;
-    }
-
-    .nav-links a:hover {
-      background-color: rgba(0,0,0,0.05);
-    }
-
-    body.dark-mode .nav-links a:hover {
-      background-color: rgba(255,255,255,0.05);
-    }
-
-    .nav-links a.active {
-      background-color: var(--primary-color);
-      color: white;
-    }
-
-    .nav-links i {
-      margin-right: 0.75rem;
-      width: 1.25rem;
-      text-align: center;
-    }
-
-    .main-content {
-      flex: 1;
-      padding: 1.5rem;
-      overflow-y: auto;
-    }
-
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 2rem;
-      padding-bottom: 1rem;
-      border-bottom: 1px solid rgba(0,0,0,0.1);
-    }
-
-    body.dark-mode .header {
-      border-bottom: 1px solid rgba(255,255,255,0.1);
-    }
-
-    .header h1 {
-      margin: 0;
-      font-size: 1.75rem;
-      font-weight: 600;
-    }
-
-    .user-controls {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
-
-    .theme-toggle {
-      background: none;
-      border: none;
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      color: inherit;
-      background-color: rgba(0,0,0,0.05);
-      transition: background-color 0.2s;
-    }
-
-    body.dark-mode .theme-toggle {
-      background-color: rgba(255,255,255,0.05);
-    }
-
-    .user-profile {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      padding: 0.5rem;
-      border-radius: var(--border-radius);
-    }
-
-    .user-avatar {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background-color: var(--primary-color);
-      color: white;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 600;
-    }
-
-    .user-info {
-      line-height: 1.2;
-    }
-    
-    .user-name {
-      font-weight: 600;
-    }
-
-    .user-role {
-      font-size: 0.8rem;
-      opacity: 0.7;
-    }
-
-    .dashboard-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
-      gap: 1.5rem;
-    }
-
-    @media (max-width: 768px) {
-      .dashboard-grid {
-        grid-template-columns: 1fr;
-      }
-      
-      .sidebar {
-        position: fixed;
-        left: -240px;
-        z-index: 100;
-        height: 100%;
-      }
-      
-      .sidebar.active {
-        left: 0;
-      }
-      
-      .mobile-menu-toggle {
-        display: block;
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            primary: {
+              DEFAULT: '#3a86ff',
+              hover: '#2b78e4',
+            },
+            secondary: '#8338ec',
+            success: '#38b000',
+            warning: '#ffbe0b',
+            danger: '#ff006e',
+          },
+          transitionProperty: {
+            'height': 'height',
+          }
+        }
       }
     }
-
-    .card {
-      background-color: var(--light-card);
-      border-radius: var(--border-radius);
-      box-shadow: var(--card-shadow);
-      padding: 1.5rem;
-      transition: all var(--transition-speed);
-    }
-
-    body.dark-mode .card {
-      background-color: var(--dark-card);
-    }
-
-    .card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1rem;
-    }
-
-    .card-title {
-      margin: 0;
-      font-size: 1.1rem;
-      font-weight: 600;
-    }
-
-    .card-body {
-      position: relative;
-    }
-
-    canvas {
-      width: 100% !important;
-      height: 300px !important;
-      background: transparent;
-      border: none;
-      padding: 0;
-    }
-
-    .refresh-button {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.75rem 1.25rem;
-      background-color: var(--primary-color);
-      color: white;
-      border: none;
-      border-radius: var(--border-radius);
-      font-weight: 600;
-      cursor: pointer;
-      transition: background-color 0.2s;
-    }
-
-    .refresh-button:hover {
-      background-color: #2b78e4;
-    }
-
-    .card-actions {
-      display: flex;
-      gap: 0.5rem;
-    }
-
-    .card-button {
-      background: none;
-      border: none;
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      color: inherit;
-      background-color: rgba(0,0,0,0.05);
-    }
-
-    body.dark-mode .card-button {
-      background-color: rgba(255,255,255,0.05);
-    }
-
-    .hidden {
-      display: none;
-    }
-  </style>
+  </script>
 </head>
-<body>
-  <div class="dashboard">
-    <aside class="sidebar">
-      <div class="sidebar-header">
+<body class="bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-50 transition-colors duration-300">
+  <div class="flex min-h-screen">
+    <!-- Sidebar -->
+    <aside class="w-60 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 p-6 flex flex-col transition-all duration-300">
+      <div class="flex items-center mb-8 pb-4 border-b border-gray-200 dark:border-gray-700">
         <i class="fas fa-bolt"></i>
-        <span class="logo">Smart Energy</span>
+        <span class="font-bold text-lg text-primary ml-2">Smart Energy</span>
       </div>
       
-      <ul class="nav-links">
-        <li><a href="#" class="active"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
-        <li><a href="#"><i class="fas fa-solar-panel"></i> Solar</a></li>
-        <li><a href="#"><i class="fas fa-bolt"></i> Power</a></li>
-        <li><a href="#"><i class="fas fa-temperature-high"></i> Temperature</a></li>
-        <li><a href="#"><i class="fas fa-battery-full"></i> Battery</a></li>
-        <li><a href="#"><i class="fas fa-cog"></i> Settings</a></li>
+      <ul class="space-y-2">
+        <li>
+          <a href="#" class="flex items-center px-4 py-3 rounded-xl bg-primary text-white">
+            <i class="fas fa-tachometer-alt w-5 text-center mr-3"></i>
+            <span>Dashboard</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" class="flex items-center px-4 py-3 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200">
+            <i class="fas fa-solar-panel w-5 text-center mr-3"></i>
+            <span>Zonnepaneel</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" class="flex items-center px-4 py-3 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200">
+            <i class="fas fa-bolt w-5 text-center mr-3"></i>
+            <span>Stroom</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" class="flex items-center px-4 py-3 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200">
+            <i class="fas fa-temperature-high w-5 text-center mr-3"></i>
+            <span>Temperatuur</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" class="flex items-center px-4 py-3 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200">
+            <i class="fas fa-battery-full w-5 text-center mr-3"></i>
+            <span>Accu</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" class="flex items-center px-4 py-3 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200">
+            <i class="fas fa-cog w-5 text-center mr-3"></i>
+            <span>Instellingen</span>
+          </a>
+        </li>
       </ul>
     </aside>
     
-    <div class="main-content">
-      <header class="header">
+    <!-- Main Content -->
+    <div class="flex-1 p-6 overflow-y-auto">
+      <!-- Header -->
+      <header class="flex justify-between items-center mb-8 pb-4 border-b border-gray-200 dark:border-gray-700">
         <div>
-          <h1>Energy Dashboard</h1>
-          <p>Monitor your home energy usage in real-time</p>
+          <h1 class="font-semibold text-2xl m-0">Energy Dashboard</h1>
+          <p class="text-gray-600 dark:text-gray-400">Monitor uw energieverbruik in realtime</p>
         </div>
         
-        <div class="user-controls">
-          <button id="themeToggle" class="theme-toggle">
+        <div class="flex items-center gap-4">
+          <!-- Theme Toggle -->
+          <button id="themeToggle" class="w-10 h-10 rounded-full flex items-center justify-center cursor-pointer bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border-none">
             <i class="fas fa-moon"></i>
           </button>
           
-          <div class="user-profile">
-            <div class="user-avatar">
-              <span>JD</span>
+          <!-- User Profile -->
+          <div class="flex items-center gap-3 p-2 rounded-xl">
+            <div class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center font-semibold">
+              <span>JM</span>
             </div>
-            <div class="user-info">
-              <div class="user-name" id="username">Jane Doe</div>
-              <div class="user-role">Homeowner</div>
+            <div class="leading-tight">
+              <div class="font-semibold" id="username">Joe Mama</div>
+              <div class="text-xs opacity-70">Huiseigenaar</div>
             </div>
           </div>
         </div>
       </header>
       
-      <div class="dashboard-grid">
-        <div class="card">
-          <div class="card-header">
-            <h2 class="card-title">Solar Panel Performance</h2>
-            <div class="card-actions">
-              <button class="card-button"><i class="fas fa-expand"></i></button>
+      <!-- Grid Layout -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Solar Panel Card -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 transition-all duration-300">
+          <div class="flex justify-between items-center mb-4">
+            <h2 class="text-lg font-semibold m-0">Zonnepaneel Prestaties</h2>
+            <div class="flex gap-2">
+              <button class="w-8 h-8 rounded-full flex items-center justify-center cursor-pointer bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border-none">
+                <i class="fas fa-expand"></i>
+              </button>
             </div>
           </div>
-          <div class="card-body">
-            <canvas id="solarChart"></canvas>
+          <div class="relative">
+            <canvas id="solarChart" class="w-full"></canvas>
           </div>
         </div>
         
-        <div class="card">
-          <div class="card-header">
-            <h2 class="card-title">Home Power Consumption</h2>
-            <div class="card-actions">
-              <button class="card-button"><i class="fas fa-expand"></i></button>
+        <!-- Power Consumption Card -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 transition-all duration-300">
+          <div class="flex justify-between items-center mb-4">
+            <h2 class="text-lg font-semibold m-0">Stroomverbruik Woning</h2>
+            <div class="flex gap-2">
+              <button class="w-8 h-8 rounded-full flex items-center justify-center cursor-pointer bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border-none">
+                <i class="fas fa-expand"></i>
+              </button>
             </div>
           </div>
-          <div class="card-body">
-            <canvas id="powerChart"></canvas>
+          <div class="relative">
+            <canvas id="powerChart" class="w-full"></canvas>
           </div>
         </div>
         
-        <div class="card">
-          <div class="card-header">
-            <h2 class="card-title">Temperature Monitoring</h2>
-            <div class="card-actions">
-              <button class="card-button"><i class="fas fa-expand"></i></button>
+        <!-- Temperature Card -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 transition-all duration-300">
+          <div class="flex justify-between items-center mb-4">
+            <h2 class="text-lg font-semibold m-0">Temperatuur Monitoring</h2>
+            <div class="flex gap-2">
+              <button class="w-8 h-8 rounded-full flex items-center justify-center cursor-pointer bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border-none">
+                <i class="fas fa-expand"></i>
+              </button>
             </div>
           </div>
-          <div class="card-body">
-            <canvas id="tempChart"></canvas>
+          <div class="relative">
+            <canvas id="tempChart" class="w-full"></canvas>
           </div>
         </div>
         
-        <div class="card">
-          <div class="card-header">
-            <h2 class="card-title">Battery Level & Air Quality</h2>
-            <div class="card-actions">
-              <button class="card-button"><i class="fas fa-expand"></i></button>
+        <!-- Battery and CO2 Card -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 transition-all duration-300">
+          <div class="flex justify-between items-center mb-4">
+            <h2 class="text-lg font-semibold m-0">Accuniveau & Luchtkwaliteit</h2>
+            <div class="flex gap-2">
+              <button class="w-8 h-8 rounded-full flex items-center justify-center cursor-pointer bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border-none">
+                <i class="fas fa-expand"></i>
+              </button>
             </div>
           </div>
-          <div class="card-body">
-            <canvas id="batteryCO2Chart"></canvas>
+          <div class="relative">
+            <canvas id="batteryCO2Chart" class="w-full"></canvas>
           </div>
         </div>
       </div>
       
-      <div style="margin-top: 2rem; display: flex; justify-content: center;">
-        <button id="refreshBtn" class="refresh-button">
-          <i class="fas fa-sync-alt"></i> Refresh Data
+      <!-- Refresh Button -->
+      <div class="mt-8 flex justify-center">
+        <button id="refreshBtn" class="flex items-center gap-2 py-3 px-5 bg-primary text-white rounded-xl font-semibold cursor-pointer hover:bg-primary-hover transition-colors duration-200">
+          <i class="fas fa-sync-alt"></i> Gegevens Vernieuwen
         </button>
       </div>
     </div>
@@ -414,17 +188,28 @@
 
   <script src="js/dashboard.js"></script>
   <script>
-    // Theme toggle functionality
+    // Theme toggle functionality 
     const themeToggle = document.getElementById('themeToggle');
     themeToggle.addEventListener('click', () => {
-      document.body.classList.toggle('dark-mode');
+      document.documentElement.classList.toggle('dark');
       const icon = themeToggle.querySelector('i');
-      if (document.body.classList.contains('dark-mode')) {
+      if (document.documentElement.classList.contains('dark')) {
         icon.classList.replace('fa-moon', 'fa-sun');
       } else {
         icon.classList.replace('fa-sun', 'fa-moon');
       }
+      
+      // Save preference to localStorage
+      const isDarkMode = document.documentElement.classList.contains('dark');
+      localStorage.setItem('darkMode', isDarkMode);
     });
+    
+    // Check for saved theme preference
+    const savedDarkMode = localStorage.getItem('darkMode') === 'true';
+    if (savedDarkMode) {
+      document.documentElement.classList.add('dark');
+      themeToggle.querySelector('i').classList.replace('fa-moon', 'fa-sun');
+    }
   </script>
 </body>
 </html>
