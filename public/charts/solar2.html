@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Zonnepaneel Details - Smart Energy</title>
+  <title>Solar Chart 2 - Smart Energy</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <link href="style.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -13,6 +13,7 @@
   <div class="p-6 max-w-4xl mx-auto">
     <a href="/public/index.html" class="inline-flex items-center text-primary hover:underline mb-6"><i class="fas fa-arrow-left mr-2"></i>Terug naar dashboard</a>
     <h1 class="text-2xl font-bold mb-4">Zonnepaneel Prestaties - Uitgebreid</h1>
+    <h2>Uniek Zonnepaneel Overzicht</h2>
     <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 mb-8">
       <canvas id="solarChartLarge" class="w-full h-96"></canvas>
     </div>
@@ -31,21 +32,19 @@
       });
     }
 
-
-    
     fetch('../data/energy.csv')
       .then(response => response.text())
       .then(csv => {
         const data = parseCSV(csv);
         // Use Tijdstip and Zonnepaneelspanning (V)
         const labels = data.map(row => row['Tijdstip']);
-        const voltage = data.map(row => parseFloat(row['Zonnepaneelspanning (V)']));
+        const voltage = data.map(row => parseFloat(row['Zonnepaneelstroom (A)']));
         new Chart(document.getElementById('solarChartLarge'), {
           type: 'line',
           data: {
             labels: labels,
             datasets: [{
-              label: 'Zonnepaneelspanning (V)',
+              label: 'Zonnepaneelstroom (A)',
               data: voltage,
               borderColor: '#3a86ff',
               fill: false

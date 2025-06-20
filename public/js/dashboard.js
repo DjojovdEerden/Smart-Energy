@@ -1,19 +1,30 @@
+let energyData = [];
+let solarChart, powerChart, tempChart, batteryCO2Chart;
+let solarChart2;
+
 document.getElementById('username').textContent = 'Joe Mama';
 
 // Make additional functions available to components.js
 window.fetchCSVData = fetchCSVData;
 window.updateCharts = updateCharts;
 window.createCharts = createCharts; // Export createCharts for direct access
+window.createSolar2Chart = createSolar2Chart;
 
 // CSV-string in array van objecten omzetten
 function parseCSV(data) {
   const lines = data.trim().split('\n');
-  const headers = lines[0].split(';').map(h => h.trim());
+  // Only use headers up to the last non-empty header
+  let headers = lines[0].split(';').map(h => h.trim());
+  // Remove trailing empty headers
+  while (headers.length && headers[headers.length - 1] === '') {
+    headers.pop();
+  }
   const rows = lines.slice(1);
 
   return rows.map(line => {
     const cols = line.split(';');
     const obj = {};
+    // Only map columns up to the number of headers
     headers.forEach((header, i) => {
       let val = cols[i];
       if (val === undefined) val = '';
@@ -27,15 +38,11 @@ function parseCSV(data) {
   });
 }
 
-let energyData = [];
-
 // Initialize chart contexts only if elements exist
 function getChartContext(id) {
   const canvas = document.getElementById(id);
   return canvas ? canvas.getContext('2d') : null;
 }
-
-let solarChart, powerChart, tempChart, batteryCO2Chart;
 
 // Create all charts
 function createCharts() {
@@ -52,26 +59,30 @@ function createCharts() {
   if (powerChart) powerChart.destroy();
   if (tempChart) tempChart.destroy();
   if (batteryCO2Chart) batteryCO2Chart.destroy();
+  if (solarChart2) solarChart2.destroy();
   
   // Get fresh contexts
   const solarCtx = getChartContext('solarChart');
   const powerCtx = getChartContext('powerChart');
   const tempCtx = getChartContext('tempChart');
   const batteryCO2Ctx = getChartContext('batteryCO2Chart');
+  const solar2Ctx = getChartContext('solarChart2');
   
   // Debug contexts
   console.log("Chart contexts available:", {
     solar: !!solarCtx,
     power: !!powerCtx,
     temp: !!tempCtx,
-    batteryCO2: !!batteryCO2Ctx
+    batteryCO2: !!batteryCO2Ctx,
+    solar2: !!solar2Ctx
   });
   
   console.log("Widget visibility:", {
     solar: isWidgetVisible('solarWidget'),
     power: isWidgetVisible('powerWidget'),
     temp: isWidgetVisible('tempWidget'),
-    batteryCO2: isWidgetVisible('batteryCO2Widget')
+    batteryCO2: isWidgetVisible('batteryCO2Widget'),
+    solar2: isWidgetVisible('solar2Widget')
   });
 
   const options = {
@@ -86,29 +97,23 @@ function createCharts() {
   // Only create charts for visible widgets with valid contexts
   if (solarCtx && isWidgetVisible('solarWidget')) {
     try {
+        const labels = energyData.map(row => row['Tijdstip']);
+        const voltage = energyData.map(row => parseFloat(row['Zonnepaneelspanning (V)']));
       solarChart = new Chart(solarCtx, {
+
         type: 'line',
         data: {
           labels: energyData.map(d => d['Tijdstip']),
           datasets: [
             {
-              label: 'Zonnepaneelspanning (V)',
-              data: energyData.map(d => d['Zonnepaneelspanning (V)']),
-              borderColor: 'rgb(255, 99, 132)',
+              label: 'Zonnepaneelspanning(V)',
+              data: voltage,
+              borderColor: '#3a86ff',
               backgroundColor: 'rgba(255, 99, 132, 0.1)',
               borderWidth: 2,
               fill: true,
               tension: 0.2
             },
-            {
-              label: 'Zonnepaneelstroom (A)',
-              data: energyData.map(d => d['Zonnepaneelstroom (A)']),
-              borderColor: 'rgb(54, 162, 235)',
-              backgroundColor: 'rgba(54, 162, 235, 0.1)',
-              borderWidth: 2,
-              fill: true,
-              tension: 0.2
-            }
           ]
         },
         options
@@ -220,6 +225,31 @@ function createCharts() {
       console.error("Error creating battery/CO2 chart:", error);
     }
   }
+
+  if (solar2Ctx && isWidgetVisible('solar2Widget')) {
+    try {
+      solar2Chart = new Chart(solar2Ctx, {
+        type: 'line',
+        data: {
+          labels: energyData.map(d => d['Tijdstip']),
+          datasets: [
+            {
+              label: 'Zonnepaneelstroom (A)',
+              data: energyData.map(d => d['Zonnepaneelstroom (A)']),
+              borderColor: 'rgb(117, 0, 128)',
+              backgroundColor: 'rgba(0, 128, 0, 0.1)',
+              borderWidth: 2,
+              fill: true,
+              tension: 0.2
+            }
+          ]
+        },
+        options
+      });
+    } catch (error) {
+      console.error('Error creating solar2 chart:', error);
+    }
+  }
 }
 
 // Improved check for widget visibility
@@ -267,6 +297,12 @@ function updateCharts() {
     batteryCO2Chart.data.datasets[1].data = energyData.map(d => d['CO2-concentratie binnen (ppm)']);
     batteryCO2Chart.update();
   }
+
+  if (solar2Ctx && isWidgetVisible('solar2Widget')) {
+    solarChart2.data.labels = labels;
+    solarChart2.data.datasets[0].data = energyData.map(d => d['Zonnepaneelspanning (V)']);
+    solarChart2.update();
+  }
 }
 
 // Fetch data and initialize/update charts
@@ -312,6 +348,6 @@ document.addEventListener('DOMContentLoaded', function() {
   if (refreshBtn) {
     refreshBtn.addEventListener('click', fetchCSVData);
   }
-  
-  // Initial data load is handled by components.js for proper timing
+  // Initial data load for charts
+  fetchCSVData();
 });

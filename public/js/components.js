@@ -3,6 +3,14 @@
  * Direct injection approach to avoid loading issues
  */
 
+// Always reset widget preferences to show all widgets (for development)
+localStorage.setItem('widgetPreferences', JSON.stringify({
+  solar: true,
+  power: true,
+  temp: true,
+  batteryCO2: true
+}));
+
 // Wait for DOM to be ready
 document.addEventListener('DOMContentLoaded', function() {
   // Inject sidebar and header directly
@@ -280,6 +288,7 @@ function setupExpandButtons() {
         else if (id === 'powerWidget') url = '/public/charts/power.html';
         else if (id === 'tempWidget') url = '/public/charts/temp.html';
         else if (id === 'batteryCO2Widget') url = '/public/charts/battery.html';
+        else if (id === 'solar2Widget') url = '/public/charts/solar2.html';
       }
       
       window.location.href = url;
