@@ -39,124 +39,22 @@
 </head>
 <body class="bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-50 transition-colors duration-300">
   <div class="flex min-h-screen">
-    <!-- Sidebar -->
-    <aside class="w-60 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 p-6 flex flex-col transition-all duration-300">
-      <div class="flex items-center mb-8 pb-4 border-b border-gray-200 dark:border-gray-700">
-        <i class="fas fa-bolt"></i>
-        <span class="font-bold text-lg text-primary ml-2">Smart Energy</span>
-      </div>
-      
-      <ul class="space-y-2 mb-8">
-        <li>
-          <a href="#" class="flex items-center px-4 py-3 rounded-xl bg-primary text-white">
-            <i class="fas fa-tachometer-alt w-5 text-center mr-3"></i>
-            <span>Dashboard</span>
-          </a>
-        </li>
-        <li>
-          <a href="#" class="flex items-center px-4 py-3 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200">
-            <i class="fas fa-solar-panel w-5 text-center mr-3"></i>
-            <span>Zonnepaneel</span>
-          </a>
-        </li>
-        <li>
-          <a href="#" class="flex items-center px-4 py-3 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200">
-            <i class="fas fa-bolt w-5 text-center mr-3"></i>
-            <span>Stroom</span>
-          </a>
-        </li>
-        <li>
-          <a href="#" class="flex items-center px-4 py-3 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200">
-            <i class="fas fa-temperature-high w-5 text-center mr-3"></i>
-            <span>Temperatuur</span>
-          </a>
-        </li>
-        <li>
-          <a href="#" class="flex items-center px-4 py-3 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200">
-            <i class="fas fa-battery-full w-5 text-center mr-3"></i>
-            <span>Accu</span>
-          </a>
-        </li>
-        <li>
-          <a href="#" class="flex items-center px-4 py-3 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200">
-            <i class="fas fa-cog w-5 text-center mr-3"></i>
-            <span>Instellingen</span>
-          </a>
-        </li>
-      </ul>
-      
-      <!-- Widget Controls -->
-      <div class="mt-auto pt-4 border-t border-gray-200 dark:border-gray-700">
-        <h3 class="font-medium text-sm uppercase text-gray-500 dark:text-gray-400 mb-3">Widgets</h3>
-        
-        <div class="space-y-3">
-          <label class="flex items-center justify-between cursor-pointer">
-            <span class="text-sm">Zonnepaneel</span>
-            <div class="relative">
-              <input type="checkbox" id="toggleSolar" class="sr-only peer" checked>
-              <div class="w-11 h-6 bg-gray-300 peer-focus:outline-none rounded-full peer dark:bg-gray-600 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary"></div>
-            </div>
-          </label>
-          
-          <label class="flex items-center justify-between cursor-pointer">
-            <span class="text-sm">Stroomverbruik</span>
-            <div class="relative">
-              <input type="checkbox" id="togglePower" class="sr-only peer" checked>
-              <div class="w-11 h-6 bg-gray-300 peer-focus:outline-none rounded-full peer dark:bg-gray-600 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary"></div>
-            </div>
-          </label>
-          
-          <label class="flex items-center justify-between cursor-pointer">
-            <span class="text-sm">Temperatuur</span>
-            <div class="relative">
-              <input type="checkbox" id="toggleTemp" class="sr-only peer" checked>
-              <div class="w-11 h-6 bg-gray-300 peer-focus:outline-none rounded-full peer dark:bg-gray-600 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary"></div>
-            </div>
-          </label>
-          
-          <label class="flex items-center justify-between cursor-pointer">
-            <span class="text-sm">Accu & CO2</span>
-            <div class="relative">
-              <input type="checkbox" id="toggleBatteryCO2" class="sr-only peer" checked>
-              <div class="w-11 h-6 bg-gray-300 peer-focus:outline-none rounded-full peer dark:bg-gray-600 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary"></div>
-            </div>
-          </label>
-        </div>
-      </div>
-    </aside>
+    <!-- Sidebar Container -->
+    <div id="sidebar-container">
+      <!-- Sidebar will be injected by components.js -->
+    </div>
     
     <!-- Main Content -->
     <div class="flex-1 p-6 overflow-y-auto">
-      <!-- Header -->
-      <header class="flex justify-between items-center mb-8 pb-4 border-b border-gray-200 dark:border-gray-700">
-        <div>
-          <h1 class="font-semibold text-2xl m-0">Energy Dashboard</h1>
-          <p class="text-gray-600 dark:text-gray-400">Monitor uw energieverbruik in realtime</p>
-        </div>
-        
-        <div class="flex items-center gap-4">
-          <!-- Theme Toggle -->
-          <button id="themeToggle" class="w-10 h-10 rounded-full flex items-center justify-center cursor-pointer bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border-none">
-            <i class="fas fa-moon"></i>
-          </button>
-          
-          <!-- User Profile -->
-          <div class="flex items-center gap-3 p-2 rounded-xl">
-            <div class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center font-semibold">
-              <span>JM</span>
-            </div>
-            <div class="leading-tight">
-              <div class="font-semibold" id="username">Joe Mama</div>
-              <div class="text-xs opacity-70">Huiseigenaar</div>
-            </div>
-          </div>
-        </div>
-      </header>
+      <!-- Header Container -->
+      <div id="header-container">
+        <!-- Header will be injected by components.js -->
+      </div>
       
-      <!-- Grid Layout -->
+      <!-- Grid Layout with widgets -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <!-- Solar Panel Card -->
-        <div id="solarWidget" class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 transition-all duration-300">
+        <div id="solarWidget" class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 transition-all duration-300 hover:shadow-lg">
           <div class="flex justify-between items-center mb-4">
             <h2 class="text-lg font-semibold m-0">Zonnepaneel Prestaties</h2>
             <div class="flex gap-2">
@@ -171,7 +69,7 @@
         </div>
         
         <!-- Power Consumption Card -->
-        <div id="powerWidget" class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 transition-all duration-300">
+        <div id="powerWidget" class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 transition-all duration-300 hover:shadow-lg">
           <div class="flex justify-between items-center mb-4">
             <h2 class="text-lg font-semibold m-0">Stroomverbruik Woning</h2>
             <div class="flex gap-2">
@@ -186,7 +84,7 @@
         </div>
         
         <!-- Temperature Card -->
-        <div id="tempWidget" class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 transition-all duration-300">
+        <div id="tempWidget" class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 transition-all duration-300 hover:shadow-lg">
           <div class="flex justify-between items-center mb-4">
             <h2 class="text-lg font-semibold m-0">Temperatuur Monitoring</h2>
             <div class="flex gap-2">
@@ -201,7 +99,7 @@
         </div>
         
         <!-- Battery and CO2 Card -->
-        <div id="batteryCO2Widget" class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 transition-all duration-300">
+        <div id="batteryCO2Widget" class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 transition-all duration-300 hover:shadow-lg">
           <div class="flex justify-between items-center mb-4">
             <h2 class="text-lg font-semibold m-0">Accuniveau & Luchtkwaliteit</h2>
             <div class="flex gap-2">
@@ -225,93 +123,8 @@
     </div>
   </div>
 
+  <!-- Scripts - dashboard.js must be first for proper initialization -->
   <script src="js/dashboard.js"></script>
-  <script>
-    // Theme toggle functionality 
-    const themeToggle = document.getElementById('themeToggle');
-    themeToggle.addEventListener('click', () => {
-      document.documentElement.classList.toggle('dark');
-      const icon = themeToggle.querySelector('i');
-      if (document.documentElement.classList.contains('dark')) {
-        icon.classList.replace('fa-moon', 'fa-sun');
-      } else {
-        icon.classList.replace('fa-sun', 'fa-moon');
-      }
-      
-      // Save preference to localStorage
-      const isDarkMode = document.documentElement.classList.contains('dark');
-      localStorage.setItem('darkMode', isDarkMode);
-    });
-    
-    // Check for saved theme preference
-    const savedDarkMode = localStorage.getItem('darkMode') === 'true';
-    if (savedDarkMode) {
-      document.documentElement.classList.add('dark');
-      themeToggle.querySelector('i').classList.replace('fa-moon', 'fa-sun');
-    }
-    
-    // Widget toggle functionality
-    document.addEventListener('DOMContentLoaded', function() {
-      // Widget toggle elements
-      const toggleSolar = document.getElementById('toggleSolar');
-      const togglePower = document.getElementById('togglePower');
-      const toggleTemp = document.getElementById('toggleTemp');
-      const toggleBatteryCO2 = document.getElementById('toggleBatteryCO2');
-      
-      // Widget elements
-      const solarWidget = document.getElementById('solarWidget');
-      const powerWidget = document.getElementById('powerWidget');
-      const tempWidget = document.getElementById('tempWidget');
-      const batteryCO2Widget = document.getElementById('batteryCO2Widget');
-      
-      // Load saved preferences
-      const loadWidgetPreferences = () => {
-        const preferences = JSON.parse(localStorage.getItem('widgetPreferences')) || {
-          solar: true,
-          power: true,
-          temp: true,
-          batteryCO2: true
-        };
-        
-        toggleSolar.checked = preferences.solar;
-        togglePower.checked = preferences.power;
-        toggleTemp.checked = preferences.temp;
-        toggleBatteryCO2.checked = preferences.batteryCO2;
-        
-        // Apply visibility
-        solarWidget.style.display = preferences.solar ? 'block' : 'none';
-        powerWidget.style.display = preferences.power ? 'block' : 'none';
-        tempWidget.style.display = preferences.temp ? 'block' : 'none';
-        batteryCO2Widget.style.display = preferences.batteryCO2 ? 'block' : 'none';
-      };
-      
-      // Save preferences and update UI
-      const saveWidgetPreferences = () => {
-        const preferences = {
-          solar: toggleSolar.checked,
-          power: togglePower.checked,
-          temp: toggleTemp.checked,
-          batteryCO2: toggleBatteryCO2.checked
-        };
-        
-        localStorage.setItem('widgetPreferences', JSON.stringify(preferences));
-        
-        // Apply visibility
-        solarWidget.style.display = preferences.solar ? 'block' : 'none';
-        powerWidget.style.display = preferences.power ? 'block' : 'none';
-        tempWidget.style.display = preferences.temp ? 'block' : 'none';
-        batteryCO2Widget.style.display = preferences.batteryCO2 ? 'block' : 'none';
-      };
-      
-      // Add event listeners
-      toggleSolar.addEventListener('change', saveWidgetPreferences);
-      togglePower.addEventListener('change', saveWidgetPreferences);
-      toggleTemp.addEventListener('change', saveWidgetPreferences);
-      toggleBatteryCO2.addEventListener('change', saveWidgetPreferences);
-      
-      // Apply preferences before charts are created
-      loadWidgetPreferences();
-    });
-  </script>
+  <script src="js/components.js"></script>
 </body>
 </html>

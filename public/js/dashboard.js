@@ -1,5 +1,10 @@
 document.getElementById('username').textContent = 'Joe Mama';
 
+// Make additional functions available to components.js
+window.fetchCSVData = fetchCSVData;
+window.updateCharts = updateCharts;
+window.createCharts = createCharts; // Export createCharts for direct access
+
 // CSV-string in array van objecten omzetten
 function parseCSV(data) {
   const lines = data.trim().split('\n');
@@ -31,17 +36,44 @@ function getChartContext(id) {
 }
 
 let solarChart, powerChart, tempChart, batteryCO2Chart;
-let solarCtx, powerCtx, tempCtx, batteryCO2Ctx;
 
-// Initialize chart contexts after DOM is loaded
-document.addEventListener('DOMContentLoaded', function() {
-  solarCtx = getChartContext('solarChart');
-  powerCtx = getChartContext('powerChart');
-  tempCtx = getChartContext('tempChart');
-  batteryCO2Ctx = getChartContext('batteryCO2Chart');
-});
-
+// Create all charts
 function createCharts() {
+  console.log("Creating charts with data points:", energyData.length);
+  
+  // Safety check for data
+  if (!energyData || !energyData.length) {
+    console.error("No chart data available");
+    return;
+  }
+  
+  // Destroy existing charts to prevent duplicates
+  if (solarChart) solarChart.destroy();
+  if (powerChart) powerChart.destroy();
+  if (tempChart) tempChart.destroy();
+  if (batteryCO2Chart) batteryCO2Chart.destroy();
+  
+  // Get fresh contexts
+  const solarCtx = getChartContext('solarChart');
+  const powerCtx = getChartContext('powerChart');
+  const tempCtx = getChartContext('tempChart');
+  const batteryCO2Ctx = getChartContext('batteryCO2Chart');
+  
+  // Debug contexts
+  console.log("Chart contexts available:", {
+    solar: !!solarCtx,
+    power: !!powerCtx,
+    temp: !!tempCtx,
+    batteryCO2: !!batteryCO2Ctx
+  });
+  
+  console.log("Widget visibility:", {
+    solar: isWidgetVisible('solarWidget'),
+    power: isWidgetVisible('powerWidget'),
+    temp: isWidgetVisible('tempWidget'),
+    batteryCO2: isWidgetVisible('batteryCO2Widget')
+  });
+
   const options = {
     responsive: true,
     maintainAspectRatio: false,
@@ -51,187 +83,235 @@ function createCharts() {
     }
   };
 
-  // Only create charts if their containers are visible and contexts exist
+  // Only create charts for visible widgets with valid contexts
   if (solarCtx && isWidgetVisible('solarWidget')) {
-    solarChart = new Chart(solarCtx, {
-      type: 'line',
-      data: {
-        labels: energyData.map(d => d['Tijdstip']),
-        datasets: [
-          {
-            label: 'Zonnepaneelspanning (V)',
-            data: energyData.map(d => d['Zonnepaneelspanning (V)']),
-            borderColor: 'rgb(255, 99, 132)',
-            fill: false,
-            tension: 0.2
-          },
-          {
-            label: 'Zonnepaneelstroom (A)',
-            data: energyData.map(d => d['Zonnepaneelstroom (A)']),
-            borderColor: 'rgb(54, 162, 235)',
-            fill: false,
-            tension: 0.2
-          }
-        ]
-      },
-      options
-    });
+    try {
+      solarChart = new Chart(solarCtx, {
+        type: 'line',
+        data: {
+          labels: energyData.map(d => d['Tijdstip']),
+          datasets: [
+            {
+              label: 'Zonnepaneelspanning (V)',
+              data: energyData.map(d => d['Zonnepaneelspanning (V)']),
+              borderColor: 'rgb(255, 99, 132)',
+              backgroundColor: 'rgba(255, 99, 132, 0.1)',
+              borderWidth: 2,
+              fill: true,
+              tension: 0.2
+            },
+            {
+              label: 'Zonnepaneelstroom (A)',
+              data: energyData.map(d => d['Zonnepaneelstroom (A)']),
+              borderColor: 'rgb(54, 162, 235)',
+              backgroundColor: 'rgba(54, 162, 235, 0.1)',
+              borderWidth: 2,
+              fill: true,
+              tension: 0.2
+            }
+          ]
+        },
+        options
+      });
+    } catch (error) {
+      console.error("Error creating solar chart:", error);
+    }
   }
 
+  // Similar try/catch blocks for other charts
   if (powerCtx && isWidgetVisible('powerWidget')) {
-    powerChart = new Chart(powerCtx, {
-      type: 'line',
-      data: {
-        labels: energyData.map(d => d['Tijdstip']),
-        datasets: [
-          {
-            label: 'Stroomverbruik woning (kW)',
-            data: energyData.map(d => d['Stroomverbruik woning (kW)']),
-            borderColor: 'rgb(255, 206, 86)',
-            fill: false,
-            tension: 0.2
-          },
-          {
-            label: 'Waterstofproductie (L/u)',
-            data: energyData.map(d => d['Waterstofproductie (L/u)']),
-            borderColor: 'rgb(75, 192, 192)',
-            fill: false,
-            tension: 0.2
-          }
-        ]
-      },
-      options
-    });
+    try {
+      powerChart = new Chart(powerCtx, {
+        type: 'line',
+        data: {
+          labels: energyData.map(d => d['Tijdstip']),
+          datasets: [
+            {
+              label: 'Stroomverbruik woning (kW)',
+              data: energyData.map(d => d['Stroomverbruik woning (kW)']),
+              borderColor: 'rgb(255, 206, 86)',
+              backgroundColor: 'rgba(255, 206, 86, 0.1)',
+              borderWidth: 2,
+              fill: true,
+              tension: 0.2
+            },
+            {
+              label: 'Waterstofproductie (L/u)',
+              data: energyData.map(d => d['Waterstofproductie (L/u)']),
+              borderColor: 'rgb(75, 192, 192)',
+              backgroundColor: 'rgba(75, 192, 192, 0.1)',
+              borderWidth: 2,
+              fill: true,
+              tension: 0.2
+            }
+          ]
+        },
+        options
+      });
+    } catch (error) {
+      console.error("Error creating power chart:", error);
+    }
   }
 
   if (tempCtx && isWidgetVisible('tempWidget')) {
-    tempChart = new Chart(tempCtx, {
-      type: 'line',
-      data: {
-        labels: energyData.map(d => d['Tijdstip']),
-        datasets: [
-          {
-            label: 'Buitentemperatuur (°C)',
-            data: energyData.map(d => d['Buitentemperatuur (°C)']),
-            borderColor: 'rgb(153, 102, 255)',
-            fill: false,
-            tension: 0.2
-          },
-          {
-            label: 'Binnentemperatuur (°C)',
-            data: energyData.map(d => d['Binnentemperatuur (°C)']),
-            borderColor: 'rgb(255, 159, 64)',
-            fill: false,
-            tension: 0.2
-          }
-        ]
-      },
-      options
-    });
+    try {
+      tempChart = new Chart(tempCtx, {
+        type: 'line',
+        data: {
+          labels: energyData.map(d => d['Tijdstip']),
+          datasets: [
+            {
+              label: 'Buitentemperatuur (°C)',
+              data: energyData.map(d => d['Buitentemperatuur (°C)']),
+              borderColor: 'rgb(153, 102, 255)',
+              backgroundColor: 'rgba(153, 102, 255, 0.1)',
+              borderWidth: 2,
+              fill: true,
+              tension: 0.2
+            },
+            {
+              label: 'Binnentemperatuur (°C)',
+              data: energyData.map(d => d['Binnentemperatuur (°C)']),
+              borderColor: 'rgb(255, 159, 64)',
+              backgroundColor: 'rgba(255, 159, 64, 0.1)',
+              borderWidth: 2,
+              fill: true,
+              tension: 0.2
+            }
+          ]
+        },
+        options
+      });
+    } catch (error) {
+      console.error("Error creating temp chart:", error);
+    }
   }
 
   if (batteryCO2Ctx && isWidgetVisible('batteryCO2Widget')) {
-    batteryCO2Chart = new Chart(batteryCO2Ctx, {
-      type: 'line',
-      data: {
-        labels: energyData.map(d => d['Tijdstip']),
-        datasets: [
-          {
-            label: 'Accuniveau (%)',
-            data: energyData.map(d => d['Accuniveau (%)']),
-            borderColor: 'rgb(0, 128, 0)',
-            fill: false,
-            tension: 0.2
-          },
-          {
-            label: 'CO2-concentratie binnen (ppm)',
-            data: energyData.map(d => d['CO2-concentratie binnen (ppm)']),
-            borderColor: 'rgb(128, 0, 0)',
-            fill: false,
-            tension: 0.2
-          }
-        ]
-      },
-      options
-    });
+    try {
+      batteryCO2Chart = new Chart(batteryCO2Ctx, {
+        type: 'line',
+        data: {
+          labels: energyData.map(d => d['Tijdstip']),
+          datasets: [
+            {
+              label: 'Accuniveau (%)',
+              data: energyData.map(d => d['Accuniveau (%)']),
+              borderColor: 'rgb(0, 128, 0)',
+              backgroundColor: 'rgba(0, 128, 0, 0.1)',
+              borderWidth: 2,
+              fill: true,
+              tension: 0.2
+            },
+            {
+              label: 'CO2-concentratie binnen (ppm)',
+              data: energyData.map(d => d['CO2-concentratie binnen (ppm)']),
+              borderColor: 'rgb(128, 0, 0)',
+              backgroundColor: 'rgba(128, 0, 0, 0.1)',
+              borderWidth: 2,
+              fill: true,
+              tension: 0.2
+            }
+          ]
+        },
+        options
+      });
+    } catch (error) {
+      console.error("Error creating battery/CO2 chart:", error);
+    }
   }
 }
 
-// Helper function to check if widget is visible
+// Improved check for widget visibility
 function isWidgetVisible(widgetId) {
   const widget = document.getElementById(widgetId);
-  return widget && widget.style.display !== 'none';
+  if (!widget) return false;
+  
+  const style = window.getComputedStyle(widget);
+  return style.display !== 'none';
 }
 
+// Update existing charts with new data
 function updateCharts() {
+  console.log("Updating charts");
+  if (!energyData.length) return;
+  
   const labels = energyData.map(d => d['Tijdstip']);
 
-  const setChart = (chart, keys) => {
-    if (!chart) return;
-    
-    keys.forEach((key, i) => {
-      chart.data.datasets[i].data = energyData.map(d => d[key]);
-    });
-    chart.data.labels = labels;
-    chart.update();
-  };
-
-  // Only update charts that exist and are visible
+  // Update only if chart exists and widget is visible
   if (solarChart && isWidgetVisible('solarWidget')) {
-    setChart(solarChart, ['Zonnepaneelspanning (V)', 'Zonnepaneelstroom (A)']);
+    solarChart.data.labels = labels;
+    solarChart.data.datasets[0].data = energyData.map(d => d['Zonnepaneelspanning (V)']);
+    solarChart.data.datasets[1].data = energyData.map(d => d['Zonnepaneelstroom (A)']);
+    solarChart.update();
   }
   
+  // Update other charts similarly
   if (powerChart && isWidgetVisible('powerWidget')) {
-    setChart(powerChart, ['Stroomverbruik woning (kW)', 'Waterstofproductie (L/u)']);
+    powerChart.data.labels = labels;
+    powerChart.data.datasets[0].data = energyData.map(d => d['Stroomverbruik woning (kW)']);
+    powerChart.data.datasets[1].data = energyData.map(d => d['Waterstofproductie (L/u)']);
+    powerChart.update();
   }
   
   if (tempChart && isWidgetVisible('tempWidget')) {
-    setChart(tempChart, ['Buitentemperatuur (°C)', 'Binnentemperatuur (°C)']);
+    tempChart.data.labels = labels;
+    tempChart.data.datasets[0].data = energyData.map(d => d['Buitentemperatuur (°C)']);
+    tempChart.data.datasets[1].data = energyData.map(d => d['Binnentemperatuur (°C)']);
+    tempChart.update();
   }
   
   if (batteryCO2Chart && isWidgetVisible('batteryCO2Widget')) {
-    setChart(batteryCO2Chart, ['Accuniveau (%)', 'CO2-concentratie binnen (ppm)']);
+    batteryCO2Chart.data.labels = labels;
+    batteryCO2Chart.data.datasets[0].data = energyData.map(d => d['Accuniveau (%)']);
+    batteryCO2Chart.data.datasets[1].data = energyData.map(d => d['CO2-concentratie binnen (ppm)']);
+    batteryCO2Chart.update();
   }
 }
 
+// Fetch data and initialize/update charts
 async function fetchCSVData() {
   try {
     const refreshBtn = document.getElementById('refreshBtn');
-    // Laadstatus weergeven
-    refreshBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Laden...';
-    refreshBtn.disabled = true;
-    
-    const response = await fetch('data/energy.csv'); // pad indien nodig aanpassen
-    if (!response.ok) throw new Error('CSV laden mislukt');
-    const text = await response.text();
-    energyData = parseCSV(text);
-
-    // Create or update charts only after DOM and widget preferences are loaded
-    if (!solarChart && !powerChart && !tempChart && !batteryCO2Chart) {
-      // Wait for DOM to be fully loaded
-      if (document.readyState === 'complete') {
-        createCharts();
-      } else {
-        window.addEventListener('load', createCharts);
-      }
-    } else {
-      updateCharts();
+    if (refreshBtn) {
+      refreshBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Laden...';
+      refreshBtn.disabled = true;
     }
     
-    // Knopstatus herstellen
-    refreshBtn.innerHTML = '<i class="fas fa-sync-alt"></i> Gegevens Vernieuwen';
-    refreshBtn.disabled = false;
+    // For demo purposes, use a sample CSV URL
+    const response = await fetch('data/energy.csv'); 
+    if (!response.ok) throw new Error('Failed to load CSV data');
+    
+    const text = await response.text();
+    energyData = parseCSV(text);
+    
+    console.log("Data loaded:", energyData.length, "data points");
+    console.log("Sample data point:", energyData[0]);
+    
+    // Force chart recreation instead of trying to update
+    setTimeout(createCharts, 200);
+    
+    if (refreshBtn) {
+      refreshBtn.innerHTML = '<i class="fas fa-sync-alt"></i> Gegevens Vernieuwen';
+      refreshBtn.disabled = false;
+    }
   } catch (error) {
-    console.error('Fout bij laden CSV:', error);
-    // Knopstatus herstellen en fout weergeven
+    console.error('Error loading data:', error);
+    
     const refreshBtn = document.getElementById('refreshBtn');
-    refreshBtn.innerHTML = '<i class="fas fa-sync-alt"></i> Opnieuw Proberen';
-    refreshBtn.disabled = false;
+    if (refreshBtn) {
+      refreshBtn.innerHTML = '<i class="fas fa-sync-alt"></i> Opnieuw Proberen';
+      refreshBtn.disabled = false;
+    }
   }
 }
 
-// Initiële gegevensophaling
-fetchCSVData();
-
-// Vernieuw-knop
-document.getElementById('refreshBtn').addEventListener('click', fetchCSVData);
+// Add Refresh button event listener when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+  const refreshBtn = document.getElementById('refreshBtn');
+  if (refreshBtn) {
+    refreshBtn.addEventListener('click', fetchCSVData);
+  }
+  
+  // Initial data load is handled by components.js for proper timing
+});
