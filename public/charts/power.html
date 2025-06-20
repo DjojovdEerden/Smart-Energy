@@ -38,6 +38,7 @@
         // Use Tijdstip and Stroomverbruik woning (kW)
         const labels = data.map(row => row['Tijdstip']);
         const power = data.map(row => parseFloat(row['Stroomverbruik woning (kW)']));
+        const power2 = data.map(row => parseFloat(row['Waterstofproductie (L/u)']));
         new Chart(document.getElementById('powerChartLarge'), {
           type: 'line',
           data: {
@@ -47,7 +48,14 @@
               data: power,
               borderColor: '#ffbe0b',
               fill: false
-            }]
+            },
+             {
+              label: 'Waterstofproductie (L/u)',
+              data: power2,
+              borderColor: 'Green',
+              fill: false
+            }
+          ]
           },
           options: { responsive: true, scales: { x: { display: false } } }
         });
