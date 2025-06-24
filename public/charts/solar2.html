@@ -21,6 +21,7 @@
   </div>
   <script>
     // Simple CSV parser
+    
     function parseCSV(text) {
       const lines = text.trim().split('\n');
       const headers = lines[0].split(';');
@@ -31,6 +32,15 @@
         return obj;
       });
     }
+    const options = {
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+      x: { title: { display: true, text: 'Tijd' } },
+      y: { beginAtZero: true }
+    }
+  };
+
 
     fetch('../data/energy.csv')
       .then(response => response.text())
@@ -50,7 +60,7 @@
               fill: false
             }]
           },
-          options: { responsive: true, scales: { x: { display: false } } }
+          options,
         });
       });
   </script>
