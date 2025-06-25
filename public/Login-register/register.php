@@ -21,4 +21,5 @@ $stmt->execute([
 ]);
 
 echo "✅ Registration succesvol.";
+echo '<meta http-equiv="refresh" content="2;url=login.html">';
 

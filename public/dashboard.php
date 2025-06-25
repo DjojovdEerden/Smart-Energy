@@ -1,3 +1,10 @@
+<?php
+session_start();
+if (!isset($_SESSION['user_id'])) {
+    header('Location: Login-register/login.html');
+    exit();
+}
+?>
 <!DOCTYPE html>
 <html lang="nl">
 <head>
@@ -46,6 +53,9 @@
     
     <!-- Main Content -->
     <div class="flex-1 p-6 overflow-y-auto">
+      <div class="flex justify-end mb-4">
+        <a href="Login-register/logout.php" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Logout</a>
+      </div>
       <!-- Header Container -->
       <div id="header-container">
         <!-- Header will be injected by components.js -->

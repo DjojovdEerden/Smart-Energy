@@ -16,8 +16,8 @@ $user = $stmt->fetch();
 if ($user && password_verify($password, $user['password'])) {
     $_SESSION['user_id'] = $user['User_id'];
     $_SESSION['username'] = $user['username'];
-    echo "✅ Inloggen gelukt.";
-    // header("Location: dashboard.php"); // bijvoorbeeld
+    header("Location: ../dashboard.php");
+    exit();
 } else {
     echo "❌ Ongeldige gebruikersnaam of wachtwoord.";
 }
