@@ -40,6 +40,7 @@
         // Use Tijdstip and Zonnepaneelspanning (V)
         const labels = data.map(row => row['Tijdstip']);
         const voltage = data.map(row => parseFloat(row['Zonnepaneelspanning (V)']));
+        const current = data.map(row => parseFloat(row['Zonnepaneelstroom (A)']));
         new Chart(document.getElementById('solarChartLarge'), {
           type: 'line',
           data: {

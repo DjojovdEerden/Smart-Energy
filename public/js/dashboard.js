@@ -99,6 +99,7 @@ function createCharts() {
     try {
         const labels = energyData.map(row => row['Tijdstip']);
         const voltage = energyData.map(row => parseFloat(row['Zonnepaneelspanning (V)']));
+        const current = energyData.map(row => parseFloat(row['Zonnepaneelstroom (A)']));
       solarChart = new Chart(solarCtx, {
 
         type: 'line',
@@ -109,6 +110,15 @@ function createCharts() {
               label: 'Zonnepaneelspanning(V)',
               data: voltage,
               borderColor: '#3a86ff',
+              backgroundColor: 'rgba(255, 99, 132, 0.1)',
+              borderWidth: 2,
+              fill: true,
+              tension: 0.2
+            },
+            {
+              label: 'Zonnepaneelstroom(A)',
+              data: current,
+              borderColor: '#ff006e',
               backgroundColor: 'rgba(255, 99, 132, 0.1)',
               borderWidth: 2,
               fill: true,
@@ -241,7 +251,16 @@ function createCharts() {
               borderWidth: 2,
               fill: true,
               tension: 0.2
-            }
+            },
+            {
+              label: 'Zonnepaneelspanning(V)',
+              data: voltage,
+              borderColor: '#3a86ff',
+              backgroundColor: 'rgba(255, 99, 132, 0.1)',
+              borderWidth: 2,
+              fill: true,
+              tension: 0.2
+            },
           ]
         },
         options
