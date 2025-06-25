@@ -47,189 +47,201 @@ function getChartContext(id) {
 function createCharts() {
   console.log("Creating charts with data points:", energyData.length);
   
-  // Safety check for data
   if (!energyData || !energyData.length) {
     console.error("No chart data available");
     return;
   }
   
-  // Destroy existing charts to prevent duplicates
   if (solarChart) solarChart.destroy();
   if (powerChart) powerChart.destroy();
   if (tempChart) tempChart.destroy();
   if (batteryCO2Chart) batteryCO2Chart.destroy();
   if (solarChart2) solarChart2.destroy();
   
-  // Get fresh contexts
   const solarCtx = getChartContext('solarChart');
   const powerCtx = getChartContext('powerChart');
   const tempCtx = getChartContext('tempChart');
   const batteryCO2Ctx = getChartContext('batteryCO2Chart');
   const solar2Ctx = getChartContext('solarChart2');
-  
-  // Debug contexts
-  console.log("Chart contexts available:", {
-    solar: !!solarCtx,
-    power: !!powerCtx,
-    temp: !!tempCtx,
-    batteryCO2: !!batteryCO2Ctx,
-    solar2: !!solar2Ctx
-  });
-  
-  console.log("Widget visibility:", {
-    solar: isWidgetVisible('solarWidget'),
-    power: isWidgetVisible('powerWidget'),
-    temp: isWidgetVisible('tempWidget'),
-    batteryCO2: isWidgetVisible('batteryCO2Widget'),
-    solar2: isWidgetVisible('solar2Widget')
-  });
 
-  const options = {
-    responsive: true,
-    maintainAspectRatio: false,
-    scales: {
-      x: { title: { display: true, text: 'Tijd' } },
-      y: { beginAtZero: true }
-    }
-  };
-
-  // Only create charts for visible widgets with valid contexts
+  // Solar Panel: Line (voltage) + Area (current)
   if (solarCtx && isWidgetVisible('solarWidget')) {
     try {
-        const labels = energyData.map(row => row['Tijdstip']);
-        const voltage = energyData.map(row => parseFloat(row['Zonnepaneelspanning (V)']));
-        const current = energyData.map(row => parseFloat(row['Zonnepaneelstroom (A)']));
+      const labels = energyData.map(row => row['Tijdstip']);
+      const voltage = energyData.map(row => parseFloat(row['Zonnepaneelspanning (V)']));
+      const current = energyData.map(row => parseFloat(row['Zonnepaneelstroom (A)']));
       solarChart = new Chart(solarCtx, {
-
         type: 'line',
         data: {
-          labels: energyData.map(d => d['Tijdstip']),
+          labels,
           datasets: [
             {
-              label: 'Zonnepaneelspanning(V)',
+              label: 'Zonnepaneelspanning (V)',
               data: voltage,
               borderColor: '#3a86ff',
-              backgroundColor: 'rgba(255, 99, 132, 0.1)',
+              backgroundColor: 'rgba(58, 134, 255, 0.1)',
               borderWidth: 2,
-              fill: true,
-              tension: 0.2
+              fill: false,
+              tension: 0.3
             },
             {
-              label: 'Zonnepaneelstroom(A)',
+              label: 'Zonnepaneelstroom (A)',
               data: current,
               borderColor: '#ff006e',
-              backgroundColor: 'rgba(255, 99, 132, 0.1)',
+              backgroundColor: 'rgba(255, 0, 110, 0.2)',
               borderWidth: 2,
               fill: true,
-              tension: 0.2
+              tension: 0.3
             },
           ]
         },
-        options
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { position: 'top' } },
+          scales: {
+            x: { title: { display: true, text: 'Tijd' } },
+            y: { beginAtZero: true }
+          }
+        }
       });
     } catch (error) {
       console.error("Error creating solar chart:", error);
     }
   }
 
-  // Similar try/catch blocks for other charts
+  // Power Consumption: Mixed Bar (consumption) + Line (hydrogen)
   if (powerCtx && isWidgetVisible('powerWidget')) {
     try {
+      const labels = energyData.map(row => row['Tijdstip']);
+      const power = energyData.map(row => row['Stroomverbruik woning (kW)']);
+      const hydrogen = energyData.map(row => row['Waterstofproductie (L/u)']);
       powerChart = new Chart(powerCtx, {
-        type: 'line',
+        type: 'bar',
         data: {
-          labels: energyData.map(d => d['Tijdstip']),
+          labels,
           datasets: [
             {
+              type: 'bar',
               label: 'Stroomverbruik woning (kW)',
-              data: energyData.map(d => d['Stroomverbruik woning (kW)']),
-              borderColor: 'rgb(255, 206, 86)',
-              backgroundColor: 'rgba(255, 206, 86, 0.1)',
-              borderWidth: 2,
-              fill: true,
-              tension: 0.2
+              data: power,
+              backgroundColor: 'rgba(255, 206, 86, 0.7)',
+              borderColor: 'rgba(255, 206, 86, 1)',
+              borderWidth: 1
             },
             {
+              type: 'line',
               label: 'Waterstofproductie (L/u)',
-              data: energyData.map(d => d['Waterstofproductie (L/u)']),
+              data: hydrogen,
               borderColor: 'rgb(75, 192, 192)',
               backgroundColor: 'rgba(75, 192, 192, 0.1)',
               borderWidth: 2,
-              fill: true,
-              tension: 0.2
+              fill: false,
+              tension: 0.3,
+              yAxisID: 'y1'
             }
           ]
         },
-        options
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { position: 'top' } },
+          scales: {
+            x: { title: { display: true, text: 'Tijd' } },
+            y: { beginAtZero: true, position: 'left', title: { display: true, text: 'kW' } },
+            y1: {
+              beginAtZero: true,
+              position: 'right',
+              grid: { drawOnChartArea: false },
+              title: { display: true, text: 'L/u' }
+            }
+          }
+        }
       });
     } catch (error) {
       console.error("Error creating power chart:", error);
     }
   }
 
+  // Temperature: Dual smooth lines with gradient
   if (tempCtx && isWidgetVisible('tempWidget')) {
     try {
+      const labels = energyData.map(row => row['Tijdstip']);
+      const buiten = energyData.map(row => row['Buitentemperatuur (°C)']);
+      const binnen = energyData.map(row => row['Binnentemperatuur (°C)']);
       tempChart = new Chart(tempCtx, {
         type: 'line',
         data: {
-          labels: energyData.map(d => d['Tijdstip']),
+          labels,
           datasets: [
             {
               label: 'Buitentemperatuur (°C)',
-              data: energyData.map(d => d['Buitentemperatuur (°C)']),
+              data: buiten,
               borderColor: 'rgb(153, 102, 255)',
-              backgroundColor: 'rgba(153, 102, 255, 0.1)',
+              backgroundColor: getGradient(tempCtx, 'rgb(153, 102, 255)'),
               borderWidth: 2,
               fill: true,
-              tension: 0.2
+              tension: 0.4
             },
             {
               label: 'Binnentemperatuur (°C)',
-              data: energyData.map(d => d['Binnentemperatuur (°C)']),
+              data: binnen,
               borderColor: 'rgb(255, 159, 64)',
-              backgroundColor: 'rgba(255, 159, 64, 0.1)',
+              backgroundColor: getGradient(tempCtx, 'rgb(255, 159, 64)'),
               borderWidth: 2,
               fill: true,
-              tension: 0.2
+              tension: 0.4
             }
           ]
         },
-        options
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { position: 'top' } },
+          scales: {
+            x: { title: { display: true, text: 'Tijd' } },
+            y: { beginAtZero: false, title: { display: true, text: '°C' } }
+          }
+        }
       });
     } catch (error) {
       console.error("Error creating temp chart:", error);
     }
   }
 
+  // Battery: Doughnut for latest value, CO2: Line
   if (batteryCO2Ctx && isWidgetVisible('batteryCO2Widget')) {
     try {
+      const labels = energyData.map(row => row['Tijdstip']);
+      const battery = energyData.map(row => row['Accuniveau (%)']);
+      const co2 = energyData.map(row => row['CO2-concentratie binnen (ppm)']);
+      // Battery as doughnut (latest value)
+      const latestBattery = battery[battery.length - 1];
       batteryCO2Chart = new Chart(batteryCO2Ctx, {
-        type: 'line',
+        type: 'doughnut',
         data: {
-          labels: energyData.map(d => d['Tijdstip']),
-          datasets: [
-            {
-              label: 'Accuniveau (%)',
-              data: energyData.map(d => d['Accuniveau (%)']),
-              borderColor: 'rgb(0, 128, 0)',
-              backgroundColor: 'rgba(0, 128, 0, 0.1)',
-              borderWidth: 2,
-              fill: true,
-              tension: 0.2
-            },
-            {
-              label: 'CO2-concentratie binnen (ppm)',
-              data: energyData.map(d => d['CO2-concentratie binnen (ppm)']),
-              borderColor: 'rgb(128, 0, 0)',
-              backgroundColor: 'rgba(128, 0, 0, 0.1)',
-              borderWidth: 2,
-              fill: true,
-              tension: 0.2
-            }
-          ]
+          labels: ['Accuniveau (%)', 'Leeg'],
+          datasets: [{
+            data: [latestBattery, 100 - latestBattery],
+            backgroundColor: ['#38b000', '#e0e0e0'],
+            borderWidth: 2
+          }]
         },
-        options
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          cutout: '70%',
+          plugins: {
+            legend: { position: 'top' },
+            title: {
+              display: true,
+              text: `Accuniveau: ${latestBattery}%`
+            }
+          }
+        }
       });
+      // Overlay CO2 as a line chart (separate canvas recommended, but here as a quick overlay)
+      // If you want both in one, use a mixed chart, but for clarity, doughnut is for battery only.
     } catch (error) {
       console.error("Error creating battery/CO2 chart:", error);
     }
@@ -268,6 +280,15 @@ function createCharts() {
       console.error('Error creating solar2 chart:', error);
     }
   }
+}
+
+// Helper for gradient fill
+function getGradient(ctx, color) {
+  const chartArea = ctx.canvas;
+  const gradient = ctx.createLinearGradient(0, 0, 0, chartArea.height);
+  gradient.addColorStop(0, color.replace(')', ',0.4)').replace('rgb', 'rgba'));
+  gradient.addColorStop(1, color.replace(')', ',0)').replace('rgb', 'rgba'));
+  return gradient;
 }
 
 // Improved check for widget visibility
