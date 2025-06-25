@@ -13,7 +13,7 @@ if (!$username || !$email || !$password) {
 $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
 
 // Voeg user toe
-$stmt = $pdo->prepare("INSERT INTO user (username, email, password) VALUES (:username, :email, :password)");
+$stmt = $pdo->prepare("INSERT INTO users (username, email, password) VALUES (:username, :email, :password)");
 $stmt->execute([
     ':username' => $username,
     ':email' => $email,
