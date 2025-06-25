@@ -77,6 +77,20 @@ if (!isset($_SESSION['user_id'])) {
             <canvas id="solarChart" class="w-full h-full"></canvas>
           </div>
         </div>
+        <!-- Solar Panel Comparison Card -->
+        <div id="solarCompareWidget" class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 transition-all duration-300 hover:shadow-lg">
+          <div class="flex justify-between items-center mb-4">
+            <h2 class="text-lg font-semibold m-0">Zonnepaneel Energie (Vergelijking)</h2>
+            <div class="flex gap-2">
+              <button class="w-8 h-8 rounded-full flex items-center justify-center cursor-pointer bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border-none">
+                <i class="fas fa-expand"></i>
+              </button>
+            </div>
+          </div>
+          <div class="relative" style="height: 300px">
+            <canvas id="solarChartCompare" class="w-full h-full"></canvas>
+          </div>
+        </div>
         
         <!-- Power Consumption Card -->
         <div id="powerWidget" class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 transition-all duration-300 hover:shadow-lg">

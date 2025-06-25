@@ -2,7 +2,6 @@ let energyData = [];
 let solarChart, powerChart, tempChart, batteryCO2Chart;
 let solarChart2;
 
-document.getElementById('username').textContent = 'Joe Mama';
 
 // Make additional functions available to components.js
 window.fetchCSVData = fetchCSVData;
@@ -254,7 +253,7 @@ function createCharts() {
             },
             {
               label: 'Zonnepaneelspanning(V)',
-              data: voltage,
+              data: energyData.map(d => d['Zonnepaneelspanning (V)']),
               borderColor: '#3a86ff',
               backgroundColor: 'rgba(255, 99, 132, 0.1)',
               borderWidth: 2,
