@@ -1,13 +1,11 @@
 let energyData = [];
 let solarChart, powerChart, tempChart, batteryCO2Chart;
-let solarChart2;
 
 
 // Make additional functions available to components.js
 window.fetchCSVData = fetchCSVData;
 window.updateCharts = updateCharts;
 window.createCharts = createCharts; // Export createCharts for direct access
-window.createSolar2Chart = createSolar2Chart;
 
 // CSV-string in array van objecten omzetten
 function parseCSV(data) {
@@ -56,13 +54,11 @@ function createCharts() {
   if (powerChart) powerChart.destroy();
   if (tempChart) tempChart.destroy();
   if (batteryCO2Chart) batteryCO2Chart.destroy();
-  if (solarChart2) solarChart2.destroy();
   
   const solarCtx = getChartContext('solarChart');
   const powerCtx = getChartContext('powerChart');
   const tempCtx = getChartContext('tempChart');
   const batteryCO2Ctx = getChartContext('batteryCO2Chart');
-  const solar2Ctx = getChartContext('solarChart2');
 
   // Solar Panel: Line (voltage) + Area (current)
   if (solarCtx && isWidgetVisible('solarWidget')) {
@@ -246,40 +242,6 @@ function createCharts() {
       console.error("Error creating battery/CO2 chart:", error);
     }
   }
-
-  if (solar2Ctx && isWidgetVisible('solar2Widget')) {
-    try {
-      solar2Chart = new Chart(solar2Ctx, {
-        type: 'line',
-        data: {
-          labels: energyData.map(d => d['Tijdstip']),
-          datasets: [
-            {
-              label: 'Zonnepaneelstroom (A)',
-              data: energyData.map(d => d['Zonnepaneelstroom (A)']),
-              borderColor: 'rgb(117, 0, 128)',
-              backgroundColor: 'rgba(0, 128, 0, 0.1)',
-              borderWidth: 2,
-              fill: true,
-              tension: 0.2
-            },
-            {
-              label: 'Zonnepaneelspanning(V)',
-              data: energyData.map(d => d['Zonnepaneelspanning (V)']),
-              borderColor: '#3a86ff',
-              backgroundColor: 'rgba(255, 99, 132, 0.1)',
-              borderWidth: 2,
-              fill: true,
-              tension: 0.2
-            },
-          ]
-        },
-        options
-      });
-    } catch (error) {
-      console.error('Error creating solar2 chart:', error);
-    }
-  }
 }
 
 // Helper for gradient fill
@@ -331,16 +293,12 @@ function updateCharts() {
   }
   
   if (batteryCO2Chart && isWidgetVisible('batteryCO2Widget')) {
-    batteryCO2Chart.data.labels = labels;
-    batteryCO2Chart.data.datasets[0].data = energyData.map(d => d['Accuniveau (%)']);
-    batteryCO2Chart.data.datasets[1].data = energyData.map(d => d['CO2-concentratie binnen (ppm)']);
+    // Only update the doughnut (battery) dataset
+    const battery = energyData.map(d => d['Accuniveau (%)']);
+    const latestBattery = battery[battery.length - 1];
+    batteryCO2Chart.data.datasets[0].data = [latestBattery, 100 - latestBattery];
+    batteryCO2Chart.options.plugins.title.text = `Accuniveau: ${latestBattery}%`;
     batteryCO2Chart.update();
-  }
-
-  if (solar2Ctx && isWidgetVisible('solar2Widget')) {
-    solarChart2.data.labels = labels;
-    solarChart2.data.datasets[0].data = energyData.map(d => d['Zonnepaneelspanning (V)']);
-    solarChart2.update();
   }
 }
 

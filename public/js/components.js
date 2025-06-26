@@ -26,7 +26,9 @@ document.addEventListener('DOMContentLoaded', function() {
   // Load data after components are ready
   setTimeout(() => {
     if (window.fetchCSVData) {
-      window.fetchCSVData();
+      window.fetchCSVData().then(() => {
+        connectWebSocket();
+      });
     }
   }, 300);
 });
@@ -294,4 +296,28 @@ function setupExpandButtons() {
       window.location.href = url;
     }
   });
+}
+
+// --- WebSocket Integration ---
+let ws;
+function connectWebSocket() {
+  ws = new WebSocket('ws://localhost:8080');
+  ws.onopen = () => console.log('WebSocket connected');
+  ws.onmessage = (event) => {
+    const msg = JSON.parse(event.data);
+    if (msg.type === 'init') {
+      // Optionally, replace all data or just add the latest
+      energyData.push(msg.data);
+      createCharts();
+    } else if (msg.type === 'update') {
+      // Add new data point
+      energyData.push(msg.data);
+      if (energyData.length > 100) energyData.shift(); // Keep last 100 points
+      updateCharts();
+    }
+  };
+  ws.onclose = () => {
+    console.log('WebSocket disconnected, retrying...');
+    setTimeout(connectWebSocket, 2000); // Reconnect after 2s
+  };
 }
